@@ -15,6 +15,7 @@ addLayer("c", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+        if (hasUpgrade("c", 12)) mult = mult.times(upgradeEffect("c", 12));
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -26,19 +27,30 @@ addLayer("c", {
     ],
     layerShown(){return true},
     upgrades:{
+        row : 4,
+        col : 4,
         11:{
             title: "开始游戏",
 			description: "每秒获得 1 经验",
 			cost: new Decimal(1),
         },
         12:{
-            title: "Air",
+            title: "Air(C)",
             description: "真的没有用(吗?)",
             cost: new Decimal(2),
             effect() {
-                return player.points.add(1).pow(0.5)
+                return player.points.add(1).pow(0.25)
             },
             unlocked() { return hasUpgrade("c", 11) },
+        },
+        13:{
+            title: "Basic(C)",
+            description: "Florr中的基本花瓣",
+            cost: new Decimal(5),
+            effect() {
+                return player[this.layer].points.add(1).pow(1.05)
+            },
+            unlocked() { return hasUpgrade("c", 12) },
         },
     },
 })
